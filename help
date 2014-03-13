@@ -1,0 +1,6 @@
+mkproj [OPTIONS]
+OPTIONS:
+    -v|--version
+        Version of the program
+    -h|--help
+        Displays some help.

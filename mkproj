@@ -1,0 +1,35 @@
+#!/bin/sh
+#--------------------------------------------------------
+# File: mkproj    Author(s): Simon Désaulniers
+# Date: 2014-03-12
+#--------------------------------------------------------
+# Script initializing the developper's project directory.
+#--------------------------------------------------------
+
+#constants
+declare -r \
+	program_name='mkproj' options='hv' loptions='help,version' \
+	version='0.1' \
+	help_path="./help"
+
+getopt_out=`getopt --name $program_name --options $options --longoptions $loptions -- "$@"`
+
+if (( $? != 0 )); then exit 1; fi
+
+#sets the positionnal parameters with getopt's output
+eval set -- "$getopt_out" 
+
+while [[ $1 != "--" ]]; do
+	case "$1" in
+		-h|--help)
+			cat $help_path
+			exit 0
+			;;
+		-v|--version)
+			echo $version
+			exit 0
+			;;
+		# do not forget to shift for other parameters.
+	esac
+done
+
