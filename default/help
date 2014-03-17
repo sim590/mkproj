@@ -1,0 +1,13 @@
+mkproj - Initilizes the developper's project directory.
+
+SYNOPSYS
+    mkproj [OPTIONS] type
+OPTIONS:
+    -m|--make
+        Specifying makefile configuration.
+    -S|--scm
+        Source control management software used (e.g: git).
+    -v|--version
+        Version of the program.
+    -h|--help
+        Displays some help.
