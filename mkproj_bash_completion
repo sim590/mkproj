@@ -1,0 +1,13 @@
+#!bash
+_mkproj()
+{
+	local cur
+	cur="${COMP_WORDS[COMP_CWORD]}"
+	opts=("-m" "--make" "-S" "--scm" "-v" "--version" "-h" "--help")
+	
+	if [[ ${cur} == -* ]]; then
+		COMPREPLY=( $(compgen -W "${opts[*]}" -- ${cur}) )
+		return 0
+	fi
+}
+complete -F _mkproj -o default mkproj
