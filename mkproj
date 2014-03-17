@@ -1,19 +1,19 @@
-#!/bin/sh
+#!/bin/bash
 #--------------------------------------------------------
-# File: mkproj    Author(s): Simon Désaulniers
+# File: mkproj		    Author(s): Simon Désaulniers
 # Date: 2014-03-12
 #--------------------------------------------------------
 # Script initializing the developper's project directory.
 #--------------------------------------------------------
 
 #constants
-declare -r \
-	program_name='mkproj' options='hv' loptions='help,version' \
-	version='0.1' \
-	help_path="./help"
+program_name='mkproj' options='hvS:p:' loptions='help,version,scm:,project-name:'
+version='0.1'
+install_dir="../default"
+home_dir="$HOME/.mkproj"
+help_path="$install_dir/help"
 
-getopt_out=`getopt --name $program_name --options $options --longoptions $loptions -- "$@"`
-
+getopt_out=$(getopt --name $program_name --options $options --longoptions $loptions -- "$@")
 if (( $? != 0 )); then exit 1; fi
 
 #sets the positionnal parameters with getopt's output
@@ -29,7 +29,57 @@ while [[ $1 != "--" ]]; do
 			echo $version
 			exit 0
 			;;
-		# do not forget to shift for other parameters.
+		-S|--scm)
+			scm=$2
+			shift 2
+			;;
+		-p|--project-name)
+			project_name=$2
+			shift 2
 	esac
 done
 
+# shift away from the last positionnal parameter (--)
+shift
+
+project_type=$1
+if [ -z "$project_type" ]; then
+	echo "The project type must be specified..." >&2
+	exit 1
+fi
+
+# -----
+# scm
+# -----
+if [[ "$scm" == 'git' ]]; then
+	if [ -d $home_dir/git ]; then
+		path=$home_dir/git
+	else
+		path=$install_dir/git
+	fi
+
+	# copy gitignore to hidden file
+	cp -i $path/gitignore "./.gitignore"
+
+	# copy rest of git files
+	for file in $path/*; do
+		if [[ $file != *'gitignore' ]]; then
+			cp -r -i $file .
+		fi
+	done
+elif [ -n "$scm" ]; then
+	echo "the scm $scm is unknown.." >&2
+fi
+
+# --------------------
+# project base files
+# --------------------
+if [ -d $home_dir/$project_type ]; then
+	path=$home_dir/$project_type
+else
+	path=$install_dir/$project_type 
+fi
+
+for file in $path/*; do
+	cp -r -i $file .
+done
